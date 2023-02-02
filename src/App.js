@@ -21,16 +21,33 @@ const alchemy = new Alchemy(settings);
 
 function App() {
   const [blockNumber, setBlockNumber] = useState();
+  const [block, setBlock] = useState({});
+  const [blockTransactions, setBlockTransactions] = useState();
 
   useEffect(() => {
     async function getBlockNumber() {
       setBlockNumber(await alchemy.core.getBlockNumber());
+      setBlock(await alchemy.core.getBlock("0x92fc42b9642023f2ee2e88094df80ce87e15d91afa812fef383e6e5cd96e2ed3"));
     }
 
     getBlockNumber();
-  });
+  }, []);
 
-  return <div className="App">Block Number: {blockNumber}</div>;
+  useEffect(() => {
+    async function getBlockTransactions() {
+      setBlockTransactions(await alchemy.core.getTransactionReceipt(block?.transactions[0]))
+    }
+
+    getBlockTransactions()
+  }, [setBlock, block])
+
+  return (
+    <>
+      <div className="App">Block Number: {blockNumber}</div>
+
+      
+    </>
+  );
 }
 
 export default App;
